@@ -9,7 +9,7 @@ export function GraphicalBackground() {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		// Resize canvas
+		// Resize canvas dynamically
 		const resizeCanvas = () => {
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
@@ -17,7 +17,7 @@ export function GraphicalBackground() {
 		resizeCanvas();
 		window.addEventListener("resize", resizeCanvas);
 
-		// Particles (glowing embers)
+		// Particles (glowing sparks)
 		interface Particle {
 			x: number;
 			y: number;
@@ -31,23 +31,23 @@ export function GraphicalBackground() {
 
 		const particles: Particle[] = [];
 		const particleCount = 60;
-		const colors = ["#ff0012", "#ff4500", "#ffd01f"]; // red-orange-yellow
+		const colors = ["#efae0e", "#fffefe", "#d9b92e"]; // gold & white tones
 
 		for (let i = 0; i < particleCount; i++) {
 			const color = colors[Math.floor(Math.random() * colors.length)];
 			particles.push({
 				x: Math.random() * canvas.width,
 				y: Math.random() * canvas.height,
-				size: Math.random() * 3 + 1.5,
+				size: Math.random() * 3 + 1.2,
 				speedX: (Math.random() - 0.5) * 0.3,
 				speedY: (Math.random() - 0.5) * 0.3,
 				color,
-				alpha: Math.random() * 0.5 + 0.2,
+				alpha: Math.random() * 0.6 + 0.3,
 				pulse: Math.random() * Math.PI * 2,
 			});
 		}
 
-		// Floating T-shirts
+		// Floating Logo Items
 		interface FloatingItem {
 			x: number;
 			y: number;
@@ -60,26 +60,26 @@ export function GraphicalBackground() {
 			opacity: number;
 		}
 
-		const tshirtImage = new Image();
-		tshirtImage.src =
-			"https://i.ibb.co/275b59dD/Capture-d-cran-2025-08-20-191534-removebg-preview.png";
+		const logoImage = new Image();
+		logoImage.src =
+			"https://missionuncrossable-game.net/wp-content/uploads/2025/05/mission-uncrossable-logo.png.webp";
 
-		const shirts: FloatingItem[] = [];
-		const shirtCount = 20;
+		const logos: FloatingItem[] = [];
+		const logoCount = 20;
 
-		for (let i = 0; i < shirtCount; i++) {
+		for (let i = 0; i < logoCount; i++) {
 			const layer = Math.floor(Math.random() * 3);
 			const baseSize = [60, 100, 140][layer];
-			shirts.push({
+			logos.push({
 				x: Math.random() * canvas.width,
 				y: Math.random() * canvas.height,
-				size: baseSize + Math.random() * 50,
-				speedX: (Math.random() - 0.5) * (0.2 + layer * 0.1),
-				speedY: (Math.random() - 0.5) * (0.2 + layer * 0.1),
+				size: baseSize + Math.random() * 40,
+				speedX: (Math.random() - 0.5) * (0.25 + layer * 0.1),
+				speedY: (Math.random() - 0.5) * (0.25 + layer * 0.1),
 				rotation: Math.random() * Math.PI * 2,
 				rotationSpeed: (Math.random() - 0.5) * 0.005,
 				layer,
-				opacity: 0.3 + layer * 0.4,
+				opacity: 0.25 + layer * 0.35,
 			});
 		}
 
@@ -89,7 +89,7 @@ export function GraphicalBackground() {
 		const render = () => {
 			time += 0.02;
 
-			// Dark background with subtle gradient
+			// Dark purple-blue background gradient
 			const gradient = ctx.createRadialGradient(
 				canvas.width / 2,
 				canvas.height / 2,
@@ -98,18 +98,18 @@ export function GraphicalBackground() {
 				canvas.height / 2,
 				canvas.width
 			);
-			gradient.addColorStop(0, "#1a0000");
-			gradient.addColorStop(1, "#000101");
+			gradient.addColorStop(0, "#181839");
+			gradient.addColorStop(1, "#0f0f23");
 			ctx.fillStyle = gradient;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			// Light streaks
+			// Golden light streaks
 			for (let i = 0; i < 3; i++) {
-				ctx.strokeStyle = `rgba(255,50,50,${0.02 + 0.03 * i})`;
-				ctx.lineWidth = 1 + i;
+				ctx.strokeStyle = `rgba(239,174,14,${0.03 + 0.02 * i})`;
+				ctx.lineWidth = 1.2 + i * 0.6;
 				ctx.beginPath();
-				ctx.moveTo((time * 30 + i * 300) % canvas.width, 0);
-				ctx.lineTo((time * 30 + i * 300 + 300) % canvas.width, canvas.height);
+				ctx.moveTo((time * 25 + i * 400) % canvas.width, 0);
+				ctx.lineTo((time * 25 + i * 400 + 300) % canvas.width, canvas.height);
 				ctx.stroke();
 			}
 
@@ -128,41 +128,39 @@ export function GraphicalBackground() {
 				ctx.beginPath();
 				ctx.arc(p.x, p.y, p.size + glow, 0, Math.PI * 2);
 				ctx.fillStyle = p.color;
-				ctx.shadowBlur = 10 * glow;
+				ctx.shadowBlur = 12 * glow;
 				ctx.shadowColor = p.color;
 				ctx.fill();
 			});
 
-			// Floating T-shirts with glow outline
-			shirts.forEach((shirt, idx) => {
-				shirt.x +=
-					shirt.speedX + Math.sin(time + idx) * 0.2 * (shirt.layer + 1);
-				shirt.y +=
-					shirt.speedY + Math.cos(time + idx) * 0.2 * (shirt.layer + 1);
-				shirt.rotation += shirt.rotationSpeed;
+			// Floating Logos
+			logos.forEach((logo, idx) => {
+				logo.x += logo.speedX + Math.sin(time + idx) * 0.2 * (logo.layer + 1);
+				logo.y += logo.speedY + Math.cos(time + idx) * 0.2 * (logo.layer + 1);
+				logo.rotation += logo.rotationSpeed;
 
-				if (shirt.x > canvas.width) shirt.x = -shirt.size;
-				if (shirt.x < -shirt.size) shirt.x = canvas.width;
-				if (shirt.y > canvas.height) shirt.y = -shirt.size;
-				if (shirt.y < -shirt.size) shirt.y = canvas.height;
+				if (logo.x > canvas.width) logo.x = -logo.size;
+				if (logo.x < -logo.size) logo.x = canvas.width;
+				if (logo.y > canvas.height) logo.y = -logo.size;
+				if (logo.y < -logo.size) logo.y = canvas.height;
 
 				ctx.save();
-				ctx.globalAlpha = shirt.opacity;
-				ctx.shadowColor = "#ff0012";
-				ctx.shadowBlur = 10;
-				ctx.translate(shirt.x + shirt.size / 2, shirt.y + shirt.size / 2);
-				ctx.rotate(shirt.rotation);
+				ctx.globalAlpha = logo.opacity;
+				ctx.shadowColor = "#efae0e";
+				ctx.shadowBlur = 15;
+				ctx.translate(logo.x + logo.size / 2, logo.y + logo.size / 2);
+				ctx.rotate(logo.rotation);
 				ctx.drawImage(
-					tshirtImage,
-					-shirt.size / 2,
-					-shirt.size / 2,
-					shirt.size,
-					shirt.size
+					logoImage,
+					-logo.size / 2,
+					-logo.size / 2,
+					logo.size,
+					logo.size
 				);
 				ctx.restore();
 			});
 
-			// Optional: soft vignette
+			// Soft vignette effect
 			const vignette = ctx.createRadialGradient(
 				canvas.width / 2,
 				canvas.height / 2,
@@ -172,16 +170,14 @@ export function GraphicalBackground() {
 				canvas.width / 1.2
 			);
 			vignette.addColorStop(0, "rgba(0,0,0,0)");
-			vignette.addColorStop(1, "rgba(0,0,0,0.6)");
+			vignette.addColorStop(1, "rgba(0,0,0,0.65)");
 			ctx.fillStyle = vignette;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 			animationFrameId = requestAnimationFrame(render);
 		};
 
-		tshirtImage.onload = () => {
-			render();
-		};
+		logoImage.onload = () => render();
 
 		return () => {
 			window.removeEventListener("resize", resizeCanvas);

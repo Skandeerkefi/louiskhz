@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRoobetStore } from "../store/RoobetStore";
+import GraphicalBackground from "@/components/GraphicalBackground";
 
 const LeaderboardPage: React.FC = () => {
 	const { leaderboard, loading, error, fetchLeaderboard } = useRoobetStore();
@@ -27,23 +28,26 @@ const LeaderboardPage: React.FC = () => {
 	const prizeMap = ["$5,000", "$3,000", "$1,500"];
 
 	return (
-		<div className='min-h-screen bg-[#181839] text-[#fffefe] p-6 md:p-10 flex flex-col items-center'>
+		<div className='relative min-h-screen  text-[#fffefe] p-6 md:p-10 flex flex-col items-center overflow-hidden'>
+			{/* 🌌 Animated Background */}
+			<GraphicalBackground />
+
 			{/* 🏆 HERO SECTION */}
-			<section className='max-w-4xl space-y-6 text-center'>
+			<section className='relative z-10 max-w-4xl space-y-6 text-center'>
 				<h1 className='text-5xl md:text-6xl font-extrabold text-[#efae0e]'>
 					LouisKHz
 				</h1>
 			</section>
 
 			{/* Divider */}
-			<div className='w-24 h-[3px] bg-[#efae0e] my-12 rounded-full'></div>
+			<div className='w-24 h-[3px] bg-[#efae0e] my-12 rounded-full relative z-10'></div>
 
 			{/* 🥇 LEADERBOARD SECTION */}
-			<section className='w-full max-w-5xl space-y-10'>
+			<section className='relative z-10 w-full max-w-5xl space-y-10'>
 				{/* Leaderboard Title */}
 				<div className='space-y-2 text-center'>
 					<h2 className='text-4xl font-bold text-[#efae0e]'>
-						Roobet Leaderboard
+						LouisKHz Leaderboard Roobet
 					</h2>
 					<p className='text-[#fffefe]/70 text-base'>
 						Track your ranking and see the current top players!
@@ -194,30 +198,27 @@ const LeaderboardPage: React.FC = () => {
 					</div>
 				</div>
 			</section>
-			<br></br>
-				{/* Call to Action */}
-				<div className='space-y-4 text-center mg-t-1'>
-					{" "}
-					<a
-						href='https://roobet.com/?ref=LouisKHz'
-						target='_blank'
-						rel='noopener noreferrer'
+
+			<br />
+
+			{/* CTA */}
+			<div className='relative z-10 space-y-4 text-center'>
+				<a
+					href='https://roobet.com/?ref=LouisKHz'
+					target='_blank'
+					rel='noopener noreferrer'
+				>
+					<Button
+						size='lg'
+						className='bg-[#efae0e] hover:bg-[#fffefe] text-[#181839] text-lg px-8 py-6 font-bold shadow-lg hover:shadow-xl transition-shadow'
 					>
-						{" "}
-						<Button
-							size='lg'
-							className='bg-[#efae0e] hover:bg-[#fffefe] text-[#181839] text-lg px-8 py-6 font-bold shadow-lg hover:shadow-xl transition-shadow'
-						>
-							{" "}
-							Start Playing on Roobet{" "}
-						</Button>{" "}
-					</a>{" "}
-					<p className='text-sm text-[#fffefe]/70'>
-						{" "}
-						Place your wagers and climb the leaderboard for amazing prizes!{" "}
-					</p>{" "}
-				</div>
-			
+						Start Playing on Roobet
+					</Button>
+				</a>
+				<p className='text-sm text-[#fffefe]/70'>
+					Place your wagers and climb the leaderboard for amazing prizes!
+				</p>
+			</div>
 		</div>
 	);
 };
