@@ -210,7 +210,7 @@ const LeaderboardPage: React.FC = () => {
 												Total Wagered
 											</div>
 											<div className='text-2xl font-bold text-[#fffefe]'>
-												{player.wagered.toLocaleString()}c
+												{player.wagered.toLocaleString()}$
 											</div>
 										</div>
 										<div className='pt-4 border-t border-[#efae0e]/30'>
