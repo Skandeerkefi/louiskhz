@@ -8,7 +8,7 @@ interface Player {
 	weightedWagered: number;
 	favoriteGameId: string;
 	favoriteGameTitle: string;
-	rankLevel: number; // optional if you want numeric rank level
+	rankLevel: number;
 }
 
 interface LeaderboardData {
@@ -32,11 +32,17 @@ export const useRoobetStore = create<RoobetStore>((set) => ({
 		set({ loading: true, error: null });
 
 		try {
-			let url =
-				"https://louiskhzdata-production-3897.up.railway.app/api/leaderboard";
-			if (startDate && endDate) {
-				url += `/${startDate}/${endDate}`;
-			}
+			// 🗓️ Default to current month (auto reset)
+			const now = new Date();
+			const year = now.getFullYear();
+			const month = now.getMonth(); // 0-based
+			const firstDay = new Date(year, month, 1).toISOString().split("T")[0];
+			const lastDay = new Date(year, month + 1, 0).toISOString().split("T")[0];
+
+			const start = startDate || firstDay;
+			const end = endDate || lastDay;
+
+			let url = `https://louiskhzdata-production-3897.up.railway.app/api/leaderboard/${start}/${end}`;
 
 			const response = await axios.get(url);
 
@@ -49,7 +55,7 @@ export const useRoobetStore = create<RoobetStore>((set) => ({
 					weightedWagered: player.weightedWagered,
 					favoriteGameId: player.favoriteGameId,
 					favoriteGameTitle: player.favoriteGameTitle,
-					rankLevel: index + 1, // numeric rank instead of image
+					rankLevel: index + 1,
 				})),
 			};
 

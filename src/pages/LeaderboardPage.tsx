@@ -161,6 +161,13 @@ const LeaderboardPage: React.FC = () => {
 					<h3 className='text-2xl font-bold text-center text-[#efae0e]'>
 						Current Top 3 Players
 					</h3>
+					<p className='text-[#fffefe]/60 text-sm italic text-center'>
+						Showing leaderboard for{" "}
+						{new Date().toLocaleString("default", {
+							month: "long",
+							year: "numeric",
+						})}
+					</p>
 
 					{loading && <p className='text-center'>Loading leaderboard...</p>}
 					{error && <p className='text-center text-red-400'>{error}</p>}
@@ -206,11 +213,20 @@ const LeaderboardPage: React.FC = () => {
 									</CardHeader>
 									<CardContent className='space-y-4'>
 										<div className='space-y-2'>
-											<div className='text-sm text-[#fffefe]/70'>
-												Total Wagered
-											</div>
-											<div className='text-2xl font-bold text-[#fffefe]'>
-												{player.wagered.toLocaleString()}$
+											<div className='space-y-2'>
+												<div className='text-sm text-[#fffefe]/70'>
+													Total Wagered
+												</div>
+												<div className='text-2xl font-bold text-[#fffefe]'>
+													{player.wagered.toLocaleString()}$
+												</div>
+
+												<div className='text-sm text-[#fffefe]/70 pt-2 border-t border-[#efae0e]/20'>
+													Weighted Wagered
+												</div>
+												<div className='text-xl font-semibold text-[#efae0e]'>
+													{player.weightedWagered.toLocaleString()}$
+												</div>
 											</div>
 										</div>
 										<div className='pt-4 border-t border-[#efae0e]/30'>
