@@ -33,7 +33,7 @@ export const useRoobetStore = create<RoobetStore>((set) => ({
 
 		try {
 			let url =
-				"https://misterteedata-production.up.railway.app/api/leaderboard";
+				"https://louiskhzdata-production-3897.up.railway.app/api/leaderboard";
 			if (startDate && endDate) {
 				url += `/${startDate}/${endDate}`;
 			}

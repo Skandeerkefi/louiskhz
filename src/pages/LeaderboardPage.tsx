@@ -14,6 +14,8 @@ const LeaderboardPage: React.FC = () => {
 	}, []);
 
 	const top3 = leaderboard?.data?.slice(0, 3) || [];
+	// Podium order: top2, top1, top3
+	const podiumOrder = [top3[1], top3[0], top3[2]];
 
 	const socialLinks = [
 		{ name: "Roobet", url: "https://roobet.com/?ref=LouisKHz" },
@@ -25,10 +27,10 @@ const LeaderboardPage: React.FC = () => {
 
 	const iconMap = [Crown, Trophy, Medal];
 	const colorMap = ["text-yellow-400", "text-gray-300", "text-orange-400"];
-	const prizeMap = ["$5,000", "$3,000", "$1,500"];
+	const prizeMap = ["100$", "50$", "25$"];
 
 	return (
-		<div className='relative min-h-screen  text-[#fffefe] p-6 md:p-10 flex flex-col items-center overflow-hidden'>
+		<div className='relative min-h-screen text-[#fffefe] p-6 md:p-10 flex flex-col items-center overflow-hidden'>
 			{/* 🌌 Animated Background */}
 			<GraphicalBackground />
 
@@ -54,33 +56,61 @@ const LeaderboardPage: React.FC = () => {
 					</p>
 				</div>
 
-				{/* Streamer Info */}
-				<Card className='bg-[#181839]/90 border border-[#efae0e]/40 shadow-lg'>
-					<CardHeader className='text-center'>
-						<div className='w-24 h-24 mx-auto bg-[#efae0e]/20 rounded-full flex items-center justify-center mb-4'>
-							<Crown className='w-12 h-12 text-[#efae0e]' />
-						</div>
-						<CardTitle className='text-3xl font-bold text-[#efae0e]'>
-							JOIN US
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='flex flex-wrap justify-center gap-3'>
-							{socialLinks.map((link) => (
-								<Button
-									key={link.name}
-									variant='outline'
-									size='lg'
-									className='border-[#efae0e]/40 text-[#fffefe] hover:text-[#efae0e] transition-colors font-semibold'
-									asChild
-								>
-									<a href={link.url} target='_blank' rel='noopener noreferrer'>
-										{link.name}
-									</a>
-								</Button>
-							))}
-						</div>
-					</CardContent>
+				<Card className='relative overflow-hidden bg-[#181839]/90 border border-[#efae0e]/40 shadow-lg'>
+					{/* Transparent Road Background */}
+					<div
+						className='absolute inset-0 bg-center bg-cover opacity-10'
+						style={{
+							backgroundImage:
+								"url('https://i.ibb.co/5XF5zJgS/Capture-d-cran-2025-10-08-141143.png')",
+						}}
+					></div>
+
+					{/* Chickens (fully visible, not transparent) */}
+					<img
+						src='https://i.ibb.co/CX3znrf/Capture-d-cran-2025-10-08-141941-removebg-preview.png'
+						alt='chicken'
+						className='absolute w-16 top-2 left-4 drop-shadow-lg animate-bounce'
+					/>
+					<img
+						src='https://i.ibb.co/pBVS3cpp/Capture-d-cran-2025-10-08-141937-removebg-preview.png'
+						alt='chicken'
+						className='absolute w-16 delay-150 top-2 right-4 drop-shadow-lg animate-bounce'
+					/>
+
+					{/* Foreground Content */}
+					<div className='relative z-10'>
+						<CardHeader className='text-center'>
+							<div className='w-24 h-24 mx-auto bg-[#efae0e]/20 rounded-full flex items-center justify-center mb-4'>
+								<Crown className='w-12 h-12 text-[#efae0e]' />
+							</div>
+							<CardTitle className='text-3xl font-bold text-[#efae0e]'>
+								JOIN US
+							</CardTitle>
+						</CardHeader>
+
+						<CardContent>
+							<div className='flex flex-wrap justify-center gap-3'>
+								{socialLinks.map((link) => (
+									<Button
+										key={link.name}
+										variant='outline'
+										size='lg'
+										className='border-[#efae0e]/40 text-[#fffefe] hover:text-[#efae0e] transition-colors font-semibold'
+										asChild
+									>
+										<a
+											href={link.url}
+											target='_blank'
+											rel='noopener noreferrer'
+										>
+											{link.name}
+										</a>
+									</Button>
+								))}
+							</div>
+						</CardContent>
+					</div>
 				</Card>
 
 				{/* Rules */}
@@ -126,7 +156,7 @@ const LeaderboardPage: React.FC = () => {
 					</CardContent>
 				</Card>
 
-				{/* Top 3 Players */}
+				{/* Top 3 Players Podium */}
 				<div className='space-y-6'>
 					<h3 className='text-2xl font-bold text-center text-[#efae0e]'>
 						Current Top 3 Players
@@ -135,24 +165,28 @@ const LeaderboardPage: React.FC = () => {
 					{loading && <p className='text-center'>Loading leaderboard...</p>}
 					{error && <p className='text-center text-red-400'>{error}</p>}
 
-					<div className='grid gap-6 md:grid-cols-3'>
-						{top3.map((player, index) => {
-							const IconComponent = iconMap[index] || Trophy;
-							const color = colorMap[index] || "text-[#efae0e]";
-							const prize = prizeMap[index] || "$500";
+					<div className='grid items-end gap-6 md:grid-cols-3'>
+						{podiumOrder.map((player, index) => {
+							if (!player) return null;
+							const originalIndex = top3.indexOf(player);
+							const IconComponent = iconMap[originalIndex] || Trophy;
+							const color = colorMap[originalIndex] || "text-[#efae0e]";
+							const prize = prizeMap[originalIndex] || "$500";
 
 							return (
 								<Card
 									key={player.uid}
 									className={`bg-[#181839]/90 border border-[#efae0e]/30 text-center transition-transform hover:scale-105 ${
-										index === 0 ? "shadow-lg border-[#efae0e]/60" : ""
+										originalIndex === 0
+											? "shadow-lg border-[#efae0e]/60 md:scale-110"
+											: "md:mt-6"
 									}`}
 								>
 									<CardHeader className='pb-3'>
 										<div className='relative'>
 											<div
 												className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-3 ${
-													index === 0
+													originalIndex === 0
 														? "bg-gradient-to-tr from-[#efae0e] to-[#fffefe]"
 														: "bg-[#efae0e]/20"
 												}`}
@@ -163,7 +197,7 @@ const LeaderboardPage: React.FC = () => {
 												variant='secondary'
 												className='absolute -top-2 -right-2 text-xs font-bold bg-[#efae0e]/20 text-[#efae0e]'
 											>
-												#{index + 1}
+												#{originalIndex + 1}
 											</Badge>
 										</div>
 										<CardTitle className='text-xl text-[#fffefe]'>
@@ -185,7 +219,9 @@ const LeaderboardPage: React.FC = () => {
 											</div>
 											<div
 												className={`text-xl font-bold ${
-													index === 0 ? "text-[#efae0e]" : "text-[#fffefe]"
+													originalIndex === 0
+														? "text-[#efae0e]"
+														: "text-[#fffefe]"
 												}`}
 											>
 												{prize}
