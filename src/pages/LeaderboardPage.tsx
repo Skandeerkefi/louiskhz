@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Trophy, Crown, Medal, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,33 @@ const LeaderboardPage: React.FC = () => {
 
 	useEffect(() => {
 		fetchLeaderboard();
+	}, []);
+	// Timer state + logic
+	const [timeLeft, setTimeLeft] = useState("");
+
+	useEffect(() => {
+		const updateTimer = () => {
+			const now = new Date();
+			const year = now.getFullYear();
+			const month = now.getMonth();
+			const endOfMonth = new Date(year, month + 1, 1, 0, 0, 0); // next month start
+			const diff = endOfMonth.getTime() - now.getTime();
+
+			const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+			const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+			const minutes = Math.floor((diff / (1000 * 60)) % 60);
+			const seconds = Math.floor((diff / 1000) % 60);
+
+			setTimeLeft(
+				`${days}d ${hours.toString().padStart(2, "0")}h ${minutes
+					.toString()
+					.padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`
+			);
+		};
+
+		updateTimer();
+		const interval = setInterval(updateTimer, 1000);
+		return () => clearInterval(interval);
 	}, []);
 
 	const top3 = leaderboard?.data?.slice(0, 3) || [];
@@ -161,13 +188,18 @@ const LeaderboardPage: React.FC = () => {
 					<h3 className='text-2xl font-bold text-center text-[#efae0e]'>
 						Current Top 3 Players
 					</h3>
-					<p className='text-[#fffefe]/60 text-sm italic text-center'>
-						Showing leaderboard for{" "}
-						{new Date().toLocaleString("default", {
-							month: "long",
-							year: "numeric",
-						})}
-					</p>
+					<div className='mt-2 text-center'>
+						<p className='text-[#fffefe]/60 text-sm italic'>
+							Showing leaderboard for{" "}
+							{new Date().toLocaleString("default", {
+								month: "long",
+								year: "numeric",
+							})}
+						</p>
+						<p className='text-[#efae0e] text-sm font-semibold mt-1'>
+							⏳ Resets in: {timeLeft}
+						</p>
+					</div>
 
 					{loading && <p className='text-center'>Loading leaderboard...</p>}
 					{error && <p className='text-center text-red-400'>{error}</p>}
